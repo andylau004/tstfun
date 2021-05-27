@@ -1,0 +1,14 @@
+
+
+
+{
+	"name": "ddagent",
+	"ip": "127.0.0.1",
+	"version": "1.0",
+	"sid": "1",
+	"server_type": 0,
+	"port": 1199,
+	"service_hub_type": 1,
+	"number_of_conns": 50,
+	"log_file": "test.log"
+}

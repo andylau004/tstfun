@@ -1,0 +1,123 @@
+package main
+
+import (
+	"fmt"
+	"math/rand"
+	"strconv"
+	"sync"
+	"testing"
+	"time"
+
+	blg4go "vrv/blog4go"
+	oldblg4go "vrv/oldblg4go"
+)
+
+func dummy_benchmark() {
+	fmt.Println("")
+	time.Sleep(time.Second)
+}
+
+const (
+	wheelCount = 10000
+)
+
+var gWgWork sync.WaitGroup
+
+func int2string(num int64) string {
+	return strconv.FormatInt(num, 10)
+}
+
+func init() {
+	name1 := "blog4go_config.xml"
+	err := blg4go.NewWriterFromConfigAsFile(name1)
+	if nil != err {
+		fmt.Println(err.Error())
+		return
+	}
+	fmt.Println("name1=", name1, " init success")
+
+	name2 := "oldblog4go_config.xml"
+	err = oldblg4go.NewWriterFromConfigAsFile(name2)
+	if nil != err {
+		fmt.Println(err.Error())
+		return
+	}
+	fmt.Println("name2=", name2, " init success")
+}
+
+func Benchmark_Old_Info(b *testing.B) {
+	b.ResetTimer()
+
+	fmt.Println("b.N=", b.N)
+	var tmpCount int = 10
+	gWgWork.Add(tmpCount)
+
+	for i := 0; i < tmpCount; i++ {
+
+		go func() {
+			rand.Seed(time.Now().Unix())
+
+			for i := 0; i < wheelCount; i++ {
+				tmpid := (int64)(rand.Int())
+				oldblg4go.Error("tst log, info=", int2string(tmpid))
+			}
+
+			gWgWork.Done()
+		}()
+
+	}
+
+	gWgWork.Wait()
+	fmt.Println("old log work done")
+	return
+}
+
+func Benchmark_New_Info(b *testing.B) {
+
+	// num:=10
+	b.ResetTimer()
+
+	// for i:=0;i<b.N;i++{
+	// 	fmt.Sprintf("%d",num)
+	// }
+
+	fmt.Println("b.N=", b.N)
+	var tmpCount int = 10
+	gWgWork.Add(tmpCount)
+
+	for i := 0; i < tmpCount; i++ {
+
+		go func() {
+			rand.Seed(time.Now().Unix())
+
+			for i := 0; i < wheelCount; i++ {
+				// fmt.Println("int=", rand.Int())      // int随机值，返回值为int
+				// fmt.Println("intn=", rand.Intn(100)) // [0,100)的随机值，返回值为int
+
+				tmpid := (int64)(rand.Int())
+				blg4go.Error("tst log, info=", int2string(tmpid))
+			}
+
+			gWgWork.Done()
+		}()
+
+	}
+
+	gWgWork.Wait()
+	fmt.Println("new log work done")
+	return
+
+	// go func () {
+
+	// 	blg4go.Info("init blg4go successfully.")
+
+	// 	rand.Seed(time.Now().Unix())
+
+	// 	fmt.Println(rand.Int())       // int随机值，返回值为int
+	// 	fmt.Println(rand.Intn(100))   // [0,100)的随机值，返回值为int
+
+	// 	gWgWork.Done()
+	// }
+
+	// gWgWork.Wait()
+}

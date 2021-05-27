@@ -1,0 +1,19 @@
+
+
+
+{
+    "callsteps":[11],
+    "protocol":1,
+    "runmode":1,
+    "readtimeout":5,
+    "hostaddr":"192.168.3.28:11130",
+    "runsecond":60,
+    "threadnum":100,
+    "usernum":5,
+    "sleepsecond":60,
+    "paramlist":[
+        {"index":11, "params":{}}
+    ]
+}
+
+

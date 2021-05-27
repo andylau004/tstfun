@@ -1,0 +1,28 @@
+title = "ant cloud configure"
+
+[antserver]
+cloudport    = ":7890"
+managerport  = ":7891"
+blog4go      = "blog4go_config.xml"
+cephport     = "172.16.8.89:1099"
+reconncephtime = 5
+uploadmode = 1
+
+
+[dbserver]
+host    = "127.0.0.1:3306"
+db      = "LINKDOOD_CLOUD_DISK"
+charset = "utf8"
+user    = "root"
+pwd     = "root"
+maxOpenConns        = 2000
+maxKeepAliveConns   = 1000
+
+[linkdood]
+apptoken     = ""
+doodbaseurl  = ""
+appid        = ""
+appsecret    = ""
+orgcode      = ""
+orgid        = ""
+

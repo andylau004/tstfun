@@ -1,0 +1,40 @@
+ 
+ 
+ 
+ <blog4go minlevel="info">
+	
+	<filter levels="trace">
+		<rotatefile path="./logs/trace.log" type="time" retentions="5"></rotatefile>
+	</filter>
+	
+	<filter levels="debug">
+		<rotatefile path="./logs/debug.log" type="time" retentions="5"></rotatefile>
+	</filter>
+
+	<filter levels="error">
+		<rotatefile path="./logs/error.log" type="time" retentions="5"></rotatefile>
+	</filter>
+
+</blog4go>
+
+
+
+
+<!-- 
+
+	<filter levels="info">
+		<rotatefile path="./logs/info.log" type="time" retentions="5"></rotatefile>
+	</filter>
+	<filter levels="error">
+		<rotatefile path="./logs/info.log" type="time" retentions="5"></rotatefile>
+	</filter>
+	<filter levels="critical">
+		<socket network="udp" address="127.0.0.1:12124"></socket>
+	</filter>
+	
+<blog4go minlevel="debug">
+	<filter levels="debug, info, warn, error" colored="false">
+		<file path="blg.log"></file>
+	</filter>
+</blog4go>
+-->
