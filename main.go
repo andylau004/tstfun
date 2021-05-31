@@ -864,6 +864,9 @@ func createFixedBody(bodySize int) []byte {
 
 func TstCh() {
 
+	tstGcFun()
+	return
+
 	tstHttpClient()
 	return
 
