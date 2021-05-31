@@ -314,7 +314,8 @@ func httpclient_workImpl(thrdIdx int) {
 		// tmBeg := time.Now()
 		// fmt.Println("tm=", tmBeg, " before do req")
 		// fmt.Println("req.URI().Host()=", string(request.URI().Host()), ", hasBodyStream=", request.IsBodyStream())
-		err := newClient.DoVrv(thrdIdx, request, resp)
+		var err error
+		// err := newClient.DoVrv(thrdIdx, request, resp)
 		// fmt.Println("tm=", time.Now(), " after do req")
 		if err != nil {
 			errMsg := fmt.Sprintf("client request agent path failed! err=%+v url=%s accToken=%s contentType=%s body=%s\n",

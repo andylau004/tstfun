@@ -1070,6 +1070,9 @@ func tstTimeCost() {
 }
 
 func main() {
+	tstGcFun()
+	return
+
 	TstCh()
 	return
 
