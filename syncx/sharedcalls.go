@@ -34,15 +34,6 @@ func NewSharedCalls() SharedCalls {
 	}
 }
 
-func (g *sharedGroup) Do(key string, fn func() (interface{}, error)) (interface{}, error) {
-	c, done := g.createCall(key)
-	if done {
-		return c.val, c.err
-	}
-
-	g.makeCall(c, key, fn)
-	return c.val, c.err
-}
 func (g *sharedGroup) DoEx(key string, fn func() (interface{}, error)) (interface{}, bool, error) {
 	c, done := g.createCall(key)
 	if done {
@@ -53,8 +44,16 @@ func (g *sharedGroup) DoEx(key string, fn func() (interface{}, error)) (interfac
 	return c.val, true, c.err
 }
 
-func (g *sharedGroup) createCall(key string) (c *call, done bool) {
+func (g *sharedGroup) Do(key string, fn func() (interface{}, error)) (interface{}, error) {
+	c, done := g.createCall(key)
+	if done {
+		return c.val, c.err
+	}
 
+	g.makeCall(c, key, fn)
+	return c.val, c.err
+}
+func (g *sharedGroup) createCall(key string) (c *call, done bool) {
 	g.lock.Lock()
 	if c, ok := g.calls[key]; ok {
 		g.lock.Unlock()

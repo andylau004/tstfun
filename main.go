@@ -6,9 +6,11 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"math/rand"
 	"net"
+	"net/http"
 	"reflect"
 	"strconv"
 	"sync"
@@ -863,6 +865,8 @@ func createFixedBody(bodySize int) []byte {
 }
 
 func TstCh() {
+	tstHttpClient1()
+	return
 
 	tstGcFun()
 	return
@@ -884,9 +888,6 @@ func TstCh() {
 	return
 
 	tstMultiThread_Client()
-	return
-
-	tstHttpClient1()
 	return
 
 	for i := 0; i < 10; i++ {
@@ -1068,14 +1069,162 @@ func tstTimeCost() {
 	// tmnow := time.Now()
 	// defer fmt.Println("end update group info, tm=", tmnow)
 }
+func httpGet__1() {
+	resp, err := http.Get("http://10.10.11.23:9981/pkg")
+	if err != nil {
+		fmt.Println("get failed, err=", err)
+		return
+	}
+
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("read all failed, err=", err)
+		return
+	}
+
+	fmt.Println("resp=", string(body))
+}
+func tst_st() {
+	type AckReq struct {
+		LstAckID  uint64
+		LackIDs   []uint64
+		KwConnKey string
+	}
+
+	var lackIDs []uint64
+	rspAck := &AckReq{ // notify sender, re send pkgs in arr;
+		LstAckID:  1,
+		LackIDs:   lackIDs,
+		KwConnKey: "111",
+	}
+	// retJson := utils.Jsonize(&rspAck)
+
+	js, _ := ffjson.Marshal(&rspAck)
+	fmt.Println("js=", string(js))
+}
+
+func tst_while() {
+
+	chExit := make(chan struct{})
+	for {
+		select {
+		case <-chExit:
+			fmt.Println("1111111111111111111111111")
+			return
+		case <-time.After(time.Second * time.Duration(2)):
+			fmt.Println("bNotify---------------2")
+			break
+		case <-time.After(time.Second * time.Duration(3)):
+			fmt.Println("bNotify---------------3")
+			break
+			// default:
+			// 	fmt.Println("default ,,,,,,,,,,,,,,,,,,,,,,,")
+		} // --- end select ---
+
+	} // --- end for ---
+}
+
+var gMtxSendIdx sync.Mutex
+var gSendPkgIdx int32
+
+func tst_a() {
+
+	for {
+
+		count := 1
+		mode := 1
+		if 1 == mode {
+
+			pfnClose := func() {
+				fmt.Println("inner ,,, count=", count)
+			}
+
+			defer pfnClose()
+
+			count++
+		}
+
+		fmt.Println("outer ,,, count=", count)
+		time.Sleep(2 * time.Second)
+	}
+	return
+
+	go func() {
+		for {
+			gMtxSendIdx.Lock()
+			retIdx := gSendPkgIdx
+			gSendPkgIdx = (gSendPkgIdx + 1) % (int32)(5)
+			gMtxSendIdx.Unlock()
+
+			fmt.Println(retIdx)
+			time.Sleep(time.Millisecond * 300)
+		}
+	}()
+
+	select {}
+}
+
+var gPoolUser *sync.Pool
+
+func tstSyncPool() {
+
+	gPoolUser = &sync.Pool{
+		New: func() interface{} {
+			obj := &UserEx{}
+			return obj
+		},
+	}
+
+	go func() {
+		defer fmt.Println("exit,,,,go thrd")
+		obj := gPoolUser.Get()
+		user := obj.(*UserEx)
+		user.Name = "name2"
+		user.Email = "511@qq.com"
+
+		fmt.Printf("addr=%p\n", user)
+
+		gPoolUser.Put(user)
+		// gPoolUser.Put(user)
+		// gPoolUser.Put(user)
+	}()
+
+	time.Sleep(2 * time.Second)
+
+	{
+		tmp1 := gPoolUser.Get()
+		obj1 := tmp1.(*UserEx)
+		fmt.Printf("obj1=%p, data=%+v\n", obj1, *obj1)
+	}
+	{
+		tmp2 := gPoolUser.Get()
+		obj2 := tmp2.(*UserEx)
+		fmt.Printf("obj2=%p, data=%+v\n", obj2, *obj2)
+	}
+	{
+		tmp3 := gPoolUser.Get()
+		obj3 := tmp3.(*UserEx)
+		fmt.Printf("obj3=%p, data=%+v\n", obj3, *obj3)
+	}
+}
 
 func main() {
-
-	// return
-	tstGcFun()
+	tstSyncPool()
+	return
+	tst_a()
+	return
+	tst_while()
+	return
+	httpGet__1()
 	return
 
 	TstCh()
+	return
+
+	// _ := syncx.NewImmutableResource(func() (nil, nil) {}, nil)
+	// return
+	tstGcFun()
 	return
 
 	tstTimeCost()

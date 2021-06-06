@@ -28,6 +28,15 @@ func doGet(client *http.Client, url string, id int) {
 		fmt.Println(err)
 		return
 	}
+	buf, err := ioutil.ReadAll(resp.Body)
+
+	fmt.Printf("%d: %s -- %v\n", id, string(buf), err)
+
+	if err := resp.Body.Close(); err != nil {
+		fmt.Println(err)
+	}
+	return
+
 	time.Sleep(51 * time.Second)
 	go getResponse(resp, err, id)
 }
