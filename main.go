@@ -18,6 +18,8 @@ import (
 	"time"
 	"utils"
 
+	// "tstfun/gen-go/Sample"
+
 	"github.com/pquerna/ffjson/ffjson"
 	"github.com/samuel/go-zookeeper/zk"
 
@@ -1070,7 +1072,8 @@ func tstTimeCost() {
 	// defer fmt.Println("end update group info, tm=", tmnow)
 }
 func httpGet__1() {
-	resp, err := http.Get("http://10.10.11.23:9981/pkg")
+	// resp, err := http.Get("http://10.10.11.23:9981/pkg")
+	resp, err := http.Get("http://10.10.7.16:9981/pkg")
 	if err != nil {
 		fmt.Println("get failed, err=", err)
 		return
@@ -1209,13 +1212,69 @@ func tstSyncPool() {
 	}
 }
 
+func retCh() <-chan int {
+	chData := make(chan int, 1024)
+
+	go func() {
+		for i := 0; i < 10; i++ {
+			chData <- i
+		}
+	}()
+
+	go func() {
+		time.Sleep(4 * time.Second)
+		fmt.Println("close chData...")
+		close(chData)
+	}()
+
+	return chData
+}
+
+func tst_channel_ret() {
+	fmt.Println("beg -------------work")
+	defer fmt.Println("end -------------work")
+
+	chRet := retCh()
+
+	for {
+		select {
+		case val, bOK := <-chRet:
+			if bOK {
+				fmt.Println("val=", val)
+			} else {
+				return
+			}
+		}
+	}
+}
+
+type MyFunc func()
+
+type myFuncImplStruct struct {
+}
+
+//go:noinline
+func (m *myFuncImplStruct) myFunc() {
+	return
+}
+
+//go:noinline
+func (m myFuncImplStruct) myFunc2() {
+	return
+}
+
 func main() {
-	tstSyncPool()
+	tst_thrift()
 	return
-	tst_a()
+
+	tst_channel_ret()
 	return
-	tst_while()
-	return
+	// tstSyncPool()
+	// return
+	// tst_a()
+	// return
+	// tst_while()
+	// return
 	httpGet__1()
 	return
 
