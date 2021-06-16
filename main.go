@@ -1285,19 +1285,7 @@ func main() {
 		}
 
 	}
-	// var workType string
-
-	// flag.Parse()
-
-	// for i, v := range os.Args {
-	//     fmt.Printf("args[%v]=%v\n", i, v)
-	// }
-
-	// fmt.Printf("user：%v\npassword：%v\nhost：%v\nport：%v\n",
-	// 	user, password, host, port)
-
 	return
-	tstHttpSrv()
 
 	tst_thrift()
 	return
