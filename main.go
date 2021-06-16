@@ -11,6 +11,7 @@ import (
 	"math/rand"
 	"net"
 	"net/http"
+	"os"
 	"reflect"
 	"strconv"
 	"sync"
@@ -1264,6 +1265,40 @@ func (m myFuncImplStruct) myFunc2() {
 }
 
 func main() {
+	fmt.Println("cmd argc=", len(os.Args))
+	// for k, v := range os.Args {
+	// 	fmt.Printf("args[%v]=[%v]\n", k, v)
+	// }
+
+	if len(os.Args) >= 2 {
+		fmt.Println("len > 2, len=", len(os.Args))
+
+		if os.Args[1] == "s" {
+			fmt.Println("server mode")
+			tstHttpSrv()
+			return
+		}
+		if os.Args[1] == "c" {
+			fmt.Println("server mode")
+			tstHttpLongConnClient()
+			return
+		}
+
+	}
+	// var workType string
+
+	// flag.Parse()
+
+	// for i, v := range os.Args {
+	//     fmt.Printf("args[%v]=%v\n", i, v)
+	// }
+
+	// fmt.Printf("user：%v\npassword：%v\nhost：%v\nport：%v\n",
+	// 	user, password, host, port)
+
+	return
+	tstHttpSrv()
+
 	tst_thrift()
 	return
 
